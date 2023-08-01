@@ -1,0 +1,1 @@
+https://github.com/Tamaloco81/Python/blob/master/genetic_algorithm/basic_string.py
