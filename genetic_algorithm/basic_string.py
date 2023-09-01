@@ -1,4 +1,4 @@
- https://github.com/Tamaloco81/Python/blob/revert-8914-pre-commit-ci-update-config/genetic_algorithm/basic_string.py"""
+ https://github.com/Tamaloco81/Python/blob/revert-8914-pre-commit-ci-update-config/genetic_algorithm/basic_string.py https://github.com/Tamaloco81/Python/blob/revert-8914-pre-commit-ci-update-config/genetic_algorithm/basic_string.py"""
 Simple multithreaded algorithm to show how the 4 phases of a genetic algorithm works
 (Evaluation, Selection, Crossover and Mutation)
 https://en.wikipedia.org/wiki/Genetic_algorithm
