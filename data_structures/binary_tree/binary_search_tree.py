@@ -10,8 +10,7 @@ Example
              / \   /
             4   7 13
 
->>> t = BinarySearchTree()
->>> t.insert(8, 3, 6, 1, 10, 14, 13, 4, 7)
+>>> t = BinarySearchTree().insert(8, 3, 6, 1, 10, 14, 13, 4, 7)
 >>> print(" ".join(repr(i.value) for i in t.traversal_tree()))
 8 3 1 6 4 7 10 14 13
 
@@ -40,7 +39,16 @@ Other example:
 >>> testlist = (8, 3, 6, 1, 10, 14, 13, 4, 7)
 >>> t = BinarySearchTree()
 >>> for i in testlist:
-...     t.insert(i)
+...     t.insert(i)  # doctest: +ELLIPSIS
+BinarySearchTree(root=8)
+BinarySearchTree(root={'8': (3, None)})
+BinarySearchTree(root={'8': ({'3': (None, 6)}, None)})
+BinarySearchTree(root={'8': ({'3': (1, 6)}, None)})
+BinarySearchTree(root={'8': ({'3': (1, 6)}, 10)})
+BinarySearchTree(root={'8': ({'3': (1, 6)}, {'10': (None, 14)})})
+BinarySearchTree(root={'8': ({'3': (1, 6)}, {'10': (None, {'14': (13, None)})})})
+BinarySearchTree(root={'8': ({'3': (1, {'6': (4, None)})}, {'10': (None, {'14': ...
+BinarySearchTree(root={'8': ({'3': (1, {'6': (4, 7)})}, {'10': (None, {'14': (13, ...
 
 Prints all the elements of the list in order traversal
 >>> print(t)
@@ -84,7 +92,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Self
 
 
 @dataclass
@@ -145,7 +153,18 @@ class BinarySearchTree:
             self.root = new_children
 
     def empty(self) -> bool:
-        return self.root is None
+        """
+        Returns True if the tree does not have any element(s).
+        False if the tree has element(s).
+
+        >>> BinarySearchTree().empty()
+        True
+        >>> BinarySearchTree().insert(1).empty()
+        False
+        >>> BinarySearchTree().insert(8, 3, 6, 1, 10, 14, 13, 4, 7).empty()
+        False
+        """
+        return not self.root
 
     def __insert(self, value) -> None:
         """
@@ -173,11 +192,36 @@ class BinarySearchTree:
                         parent_node = parent_node.right
             new_node.parent = parent_node
 
-    def insert(self, *values) -> None:
+    def insert(self, *values) -> Self:
         for value in values:
             self.__insert(value)
+        return self
 
     def search(self, value) -> Node | None:
+        """
+        >>> tree = BinarySearchTree().insert(10, 20, 30, 40, 50)
+        >>> tree.search(10)
+        {'10': (None, {'20': (None, {'30': (None, {'40': (None, 50)})})})}
+        >>> tree.search(20)
+        {'20': (None, {'30': (None, {'40': (None, 50)})})}
+        >>> tree.search(30)
+        {'30': (None, {'40': (None, 50)})}
+        >>> tree.search(40)
+        {'40': (None, 50)}
+        >>> tree.search(50)
+        50
+        >>> tree.search(5) is None  # element not present
+        True
+        >>> tree.search(0) is None  # element not present
+        True
+        >>> tree.search(-5) is None  # element not present
+        True
+        >>> BinarySearchTree().search(10)
+        Traceback (most recent call last):
+            ...
+        IndexError: Warning: Tree is empty! please use another.
+        """
+
         if self.empty():
             raise IndexError("Warning: Tree is empty! please use another.")
         else:
@@ -190,6 +234,15 @@ class BinarySearchTree:
     def get_max(self, node: Node | None = None) -> Node | None:
         """
         We go deep on the right branch
+
+        >>> BinarySearchTree().insert(10, 20, 30, 40, 50).get_max()
+        50
+        >>> BinarySearchTree().insert(-5, -1, 0.1, -0.3, -4.5).get_max()
+        {'0.1': (-0.3, None)}
+        >>> BinarySearchTree().insert(1, 78.3, 30, 74.0, 1).get_max()
+        {'78.3': ({'30': (1, 74.0)}, None)}
+        >>> BinarySearchTree().insert(1, 783, 30, 740, 1).get_max()
+        {'783': ({'30': (1, 740)}, None)}
         """
         if node is None:
             if self.root is None:
@@ -204,6 +257,15 @@ class BinarySearchTree:
     def get_min(self, node: Node | None = None) -> Node | None:
         """
         We go deep on the left branch
+
+        >>> BinarySearchTree().insert(10, 20, 30, 40, 50).get_min()
+        {'10': (None, {'20': (None, {'30': (None, {'40': (None, 50)})})})}
+        >>> BinarySearchTree().insert(-5, -1, 0, -0.3, -4.5).get_min()
+        {'-5': (None, {'-1': (-4.5, {'0': (-0.3, None)})})}
+        >>> BinarySearchTree().insert(1, 78.3, 30, 74.0, 1).get_min()
+        {'1': (None, {'78.3': ({'30': (1, 74.0)}, None)})}
+        >>> BinarySearchTree().insert(1, 783, 30, 740, 1).get_min()
+        {'1': (None, {'783': ({'30': (1, 740)}, None)})}
         """
         if node is None:
             node = self.root
